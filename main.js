@@ -36,6 +36,7 @@ function load() {
 		language: 'javascript',
 		theme: 'vs-dark',
 		automaticLayout: true,
+		minimap: { enabled: false },
 	  });
 	  editor.onDidChangeModelContent((e) => { customChanged() });
 	  ensureInitialized();
