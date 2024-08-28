@@ -1,26 +1,37 @@
-html, body {
-    width:  100%;
-    height: 100%;
-    margin: 0;
-    background: #eee;
+:root {
+  --bg-color: #eee;
+  --nav-width: 120px;
+  --mode-height: 50px;
+  --canvas-width: 816px;
+  --canvas-height: 896px;
 }
-#main {
+html{
+    all:unset;
+}
+body {
+    all:unset;
+    background: var(--bg-color);
     display: flex;
     flex-direction: row;
+    height: 100vh;
     width: 100vw;
-    color: #eee;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    height: 896px;
+    overflow-y: hidden;
 }
-#code {
-    height: 100%;
+nav {
+    height: 100vh;
+}
+aside{
     width: 100%;
+    height: 100%;
+}
+#canvas {
+    height: var(--canvas-height)
 }
 #schemas {
-    width: 120px;
-    min-width: 120px;
+    width: var(--nav-width);
+    min-width: var(--nav-width);
+    height: calc(100% - var(--mode-height) - 16px);
+    display: grid;
     flex-direction: column;
     overflow-x: clip;
     overflow-y: scroll;
@@ -35,21 +46,14 @@ html, body {
 #schemas canvas#customthumb {
     height: 100px;
 }
-.monaco-editor {
-    position: absolute !important;
-}
 #modes {
-    display: flex;
-    flex-direction: row;
-    height: 50px;
+    display: grid;
+    gap: 4px;
+    grid-auto-flow: column;
+    height: var(--mode-height);
     padding: 10px 7px;
-}
-#modes div {
-    border: white 2px solid;
-    padding: 4px 3px;
-    margin: 0 3px;
-    text-align: center;
-    min-width: 25px;
-    background: #222;
-    font-size: 20px;
+    padding: 8px;
+    position: sticky;
+    top: 0;
+    background: var(--bg-color);
 }

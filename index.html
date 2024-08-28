@@ -12,17 +12,20 @@
 </head>
 
 <body onload="load()">
-  <div id="main">
-    <div id="schemas">
+    <nav>
       <div id="modes">
-        <div onclick="smallMode()">🍀</div>
-        <div onclick="bigMode()"/>🖥️</div>
-        <div onclick="exportPng()"/>➡️</div>
+        <button onclick="smallMode()">🍀</button>
+        <button onclick="bigMode()"/>🖥️</button>
+        <button onclick="exportPng()"/>➡️</button>
       </div>
-      <canvas id="customthumb" width="100" height="100" onclick="selectSchema('[Custom]')">
-    </div>
+      <div id="schemas">
+        <canvas id="customthumb" width="100" height="100" onclick="selectSchema('[Custom]')">
+      </div>
+    </nav>
+
+
     <canvas id="canvas" width="816" height="896" onclick="clicked(event)" ondblclick="resetSeeds()"></canvas>
-    <div id="code"></div>
-  </div>
+
+    <aside id="code"></aside>
 </body>
 </html>
