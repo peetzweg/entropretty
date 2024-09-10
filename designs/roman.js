@@ -40,7 +40,7 @@ function roman(n) {
   return result;
 }
 
-function draw(ctx, seed) {
+export function draw(ctx, seed) {
   let size = 100;
   let numbers = split(seed, 3);
   ctx.strokeStyle = "";

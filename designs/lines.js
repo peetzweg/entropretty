@@ -1,6 +1,6 @@
 import { dark, black, light, split } from "../utils.js";
 
-function draw(ctx, seed) {
+export function draw(ctx, seed) {
   let nibbles = split(seed, 8);
   ctx.lineWidth = 4;
   ctx.strokeStyle = light;
@@ -8,7 +8,10 @@ function draw(ctx, seed) {
   for (var x = 0; x <= 100; x += 12.5) {
     ctx.lineTo(
       x,
-      ((nibbles[0] + nibbles[1] * 2 ** 4 + nibbles[2] * 2 ** 8 + x / 100) ** 2.1 % 1) * 100
+      ((nibbles[0] + nibbles[1] * 2 ** 4 + nibbles[2] * 2 ** 8 + x / 100) **
+        2.1 %
+        1) *
+        100
     );
   }
   ctx.stroke();
@@ -19,7 +22,10 @@ function draw(ctx, seed) {
   for (var x = 0; x <= 100; x += 12.5) {
     ctx.lineTo(
       x,
-      ((nibbles[3] + nibbles[4] * 2 ** 4 + nibbles[5] * 2 ** 8 + x / 100) ** 3.1 % 1) * 100
+      ((nibbles[3] + nibbles[4] * 2 ** 4 + nibbles[5] * 2 ** 8 + x / 100) **
+        3.1 %
+        1) *
+        100
     );
   }
   ctx.stroke();
@@ -30,7 +36,10 @@ function draw(ctx, seed) {
   for (var x = 0; x <= 100; x += 12.5) {
     ctx.lineTo(
       x,
-      ((nibbles[5] + nibbles[6] * 2 ** 4 + nibbles[7] * 2 ** 8 + x / 100) ** 4.1 % 1) * 100
+      ((nibbles[5] + nibbles[6] * 2 ** 4 + nibbles[7] * 2 ** 8 + x / 100) **
+        4.1 %
+        1) *
+        100
     );
   }
   ctx.stroke();
