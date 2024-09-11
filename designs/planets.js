@@ -70,4 +70,4 @@ function draw(ctx, seed) {
   }
 }
 
-export const schema = { draw, name: "Planets", artist: "ggwpez.gh" };
+export const schema = { draw, name: "Planets", artist: "ggwpez.gh", kind: "Procedural" };

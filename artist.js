@@ -116,7 +116,7 @@ function addSchema(schema, id) {
     } else {
         id.replace(/\W/g, '');
         let caption = schema.caption ? captionThumb(schema.caption) : null;
-        let message = { op: 'addSchema', id, thumb: thumb(schema.draw), name: schema.name, artist: schema.artist, caption };
+        let message = { op: 'addSchema', id, thumb: thumb(schema.draw), name: schema.name, artist: schema.artist, caption, kind: schema.kind };
         postMessage(message);
         schemas[id] = { draw: schema.draw };
     }
@@ -140,6 +140,7 @@ const DESIGNS = [
     'sprite.js',
     'squares.js',
     'star.js',
+    'personalId.js'
 ];
 for (let d in DESIGNS.sort()) {
     addSchema((await import(`./designs/${DESIGNS[d]}`)).schema, d);

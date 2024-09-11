@@ -42,6 +42,6 @@ function doDraw(ctx, seed, monochrome) {
 }
 
 export const schema = [
-	{ draw: (c, s) => doDraw(c, s, true), name: "Squares (Mono)", artist: "ggwpez.gh" },
-	{ draw: (c, s) => doDraw(c, s, false), name: "Squares (Chroma)", artist: "ggwpez.gh" },
+	{ draw: (c, s) => doDraw(c, s, true), name: "Squares (Mono)", artist: "ggwpez.gh", kind: "Procedural" },
+	{ draw: (c, s) => doDraw(c, s, false), name: "Squares (Chroma)", artist: "ggwpez.gh", kind: "Procedural" },
 ];

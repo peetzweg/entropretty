@@ -56,7 +56,7 @@ function draw(ctx, seed) {
     ctx.translate(0.5, 0.5)
     ctx.rotate(rand() * Math.PI * 2)
     ctx.translate(-0.5, -0.5)
-    
+
     cs = 1;
     setLengths();
 
@@ -179,8 +179,8 @@ var Arm = Arm || {
         // context.lineTo(this.endX, this.endY);
         // context.stroke();
         // context.closePath();
-    
+
     },
 };
 
-export const schema = { draw, name: "Kins", artist: "pifragile.gh" };
+export const schema = { draw, name: "Kins", artist: "pifragile.gh", kind: "Procedural" };

@@ -1,17 +1,21 @@
 let artist = null;
 let lastCustomCode = "";
 let seeds = null;
+let personalSeeds = null;
+let accountSeeds = null;
 let index = [0, 0];
 let ongoing = 0;
 let artistTimeout = null;
 let renderCache = {};
 let schemaName = null;
+let schemaKind = 'Procedural';
 let customChangeTimeout = null;
 let editor = null;
 let artistInitialized = false;
 let big = false;
 const EXPORT_SIZE = 8000;
 const CUSTOM = '[Custom]';
+const CUSTOM_KIND = 'Procedural';
 
 var schemas = { '[Custom]': { draw: null } };
 function addSchema(name, draw) {
@@ -52,10 +56,10 @@ function ensureInitialized() {
 	}
 	updateCustom();
 	try {
-		selectSchema(window.localStorage.getItem("schemaName") || CUSTOM);
+		selectSchema(window.localStorage.getItem("schemaName") || CUSTOM, window.localStorage.getItem("schemaKind") || CUSTOM_KIND);
 	}
 	catch (e) {
-		selectSchema(CUSTOM);
+		selectSchema(CUSTOM || CUSTOM_KIND);
 	}
 	try {
 		index = JSON.parse(window.localStorage.getItem('index'));
@@ -65,9 +69,11 @@ function ensureInitialized() {
 	}
 	try {
 		seeds = JSON.parse(window.localStorage.getItem('seeds'));
+		personalSeeds = JSON.parse(window.localStorage.getItem('personalSeeds'));
+		accountSeeds = JSON.parse(window.localStorage.getItem('accountSeeds'));
 	}
 	finally {
-		if (seeds) {
+		if (seeds && personalSeeds && accountSeeds) {
 			rerender();
 		} else {
 			resetSeeds();
@@ -101,26 +107,29 @@ function smallMode() {
 	rerender();
 }
 
-function selectSchema(name) {
+function selectSchema(name, kind) {
 	if (schemaName == name) return;
 	if (schemaName) {
 		let e = document.getElementById(schemaName == CUSTOM ? 'customthumb' : `thumb-${schemaName}`);
 		if (e) e.style.backgroundColor = 'transparent';
 	}
 	schemaName = name;
+	schemaKind = kind;
 	let e = document.getElementById(schemaName == CUSTOM ? 'customthumb' : `thumb-${schemaName}`);
 	// Can be null if our browser local storage holds stale names.
 	if (!e) return;
 	e.style.backgroundColor = '#bbf';
 	if (e.scrollIntoViewIfNeeded) e.scrollIntoViewIfNeeded();
 	window.localStorage.setItem('schemaName', name);
+	window.localStorage.setItem('schemaKind', kind);
 	document.title = `Entropretty - ${name}`;
 	rerender();
 }
 
 function exportPng() {
 //    artist.postMessage({ op: 'render', note: 'export', schemaName, seed: seeds[index[0]][index[1]], width: 12000, height: 18600});
-	artist.postMessage({ op: 'render', note: 'export', schemaName, seed: seeds[index[0]][index[1]], width: 2000, height: 2000});
+	const seedsOfKind = seedsForKind(schemaKind);
+	artist.postMessage({ op: 'render', note: 'export', schemaName, seed: seedsOfKind[index[0]][index[1]], width: 2000, height: 2000});
 }
 
 function exportSvg() {
@@ -192,39 +201,57 @@ function ensureUpdated() {
 }
 
 function resetSeeds() {
-	let mutate = mutateBits(3);
-	seeds = [];
+	const mutate = mutateBits(3);
+	seeds = []
+	personalSeeds = []
+    accountSeeds = []
+
 	for(var i = 0; i < 8; ++i) {
-		let run = [randSeed(4)];
+		const procedural = [randSeed(4)];
+		const proceduralPersonal = [randSeed(8)];
+		const proceduralAccount = [randSeed(32)];
 		for(var j = 0; j < 15; ++j) {
-			run.push(run.slice(-1)[0].slice());
-			mutate(run.slice(-1)[0]);
+			procedural.push(procedural.slice(-1)[0].slice());
+			mutate(procedural.slice(-1)[0]);
+
+			proceduralPersonal.push(proceduralPersonal.slice(-1)[0].slice());
+			mutate(proceduralPersonal.slice(-1)[0]);
+
+			proceduralAccount.push(proceduralAccount.slice(-1)[0].slice());
+			mutate(proceduralAccount.slice(-1)[0]);
 		}
-		seeds.push(run);
+		seeds.push(procedural);
+		personalSeeds.push(proceduralPersonal);
+		accountSeeds.push(proceduralAccount);
 	}
+
 	window.localStorage.setItem('seeds', JSON.stringify(seeds));
+	window.localStorage.setItem('personalSeeds', JSON.stringify(personalSeeds));
+	window.localStorage.setItem('accountSeeds', JSON.stringify(accountSeeds));
+
 	rerender();
 }
 
 function rerender() {
 	// We must bail if there's no seeds yet - we will call rerender at the end of the initialization
 	// process anyway.
-	if (!seeds) return;
+	if (!seeds || !personalSeeds || !accountSeeds) return;
 	renderCache = {};
 	if (artistTimeout) {
 		window.clearTimeout(artistTimeout);
 		resetArtist();
 	}
 	artistTimeout = window.setTimeout(resetArtist, 500000);
-	console.log(`Main: Rerendering ${schemaName}`);
+	const seedsOfKind = seedsForKind(schemaKind)
+
 	if (big) {
 		ongoing++;
-		artist.postMessage({ op: 'render', note: 'screen', schemaName, seed: seeds[index[0]][index[1]], width: 800, height: 800 });
+		artist.postMessage({ op: 'render', note: 'screen', schemaName, seed: seedsOfKind[index[0]][index[1]], width: 800, height: 800 });
 	} else {
 		for(var y = 0; y < 8; y++) {
 			for(var x = 0; x < 16; x++) {
 				ongoing++;
-				artist.postMessage({ op: 'render', note: 'screen', schemaName, seed: seeds[y][x], width: 400, height: 400 });
+				artist.postMessage({ op: 'render', note: 'screen', schemaName, seed: seedsOfKind[y][x], width: 400, height: 400 });
 			}
 		}
 	}
@@ -245,7 +272,7 @@ function onArtistMessage(e) {
 			  downloadLink.click();
 			});
 		} else {
-			renderCache[numeric(seed)] = image;
+			renderCache[seed.join(",")] = image;
 			ongoing = Math.max(0, ongoing - 1);
 			if (ongoing == 0) {
 				finishRender();
@@ -276,7 +303,7 @@ function onArtistMessage(e) {
 			console.log("Have caption");
 			ctx.drawImage(e.data.caption, 0, 0, 100, 30, 0, 100, 100, 30);
 		}
-		canvas.onclick = () => { selectSchema(e.data.id) };
+		canvas.onclick = () => { selectSchema(e.data.id, e.data.kind) };
 		document.getElementById('schemas').appendChild(canvas);
 	} else if (e.data.op == 'initialized') {
 		artistInitialized = true;
@@ -290,7 +317,8 @@ function onArtistMessage(e) {
 }
 
 function drawItem(ctx, seed, x, y, size) {
-	let image = renderCache[numeric(seed)];
+	let image = renderCache[seed.join(',')];
+
 	if (!image) {
 		ctx.lineWidth = size / 8;
 		ctx.lineCap = 'butt';
@@ -333,19 +361,20 @@ function paint() {
 
 	ctx.fillStyle = '#444';
 	ctx.fillRect(0, 0, 800 * 1.02, 800 * 1.12);
+	const seedsOfKind = seedsForKind(schemaKind);
 
 	if (big) {
-		paintItem(ctx, seeds[index[0]][index[1]], 0, 0, 800);
+		paintItem(ctx, seedsOfKind[index[0]][index[1]], 0, 0, 800);
 	} else {
-		paintItem(ctx, seeds[index[0]][index[1]], 0, 0, 400);
+		paintItem(ctx, seedsOfKind[index[0]][index[1]], 0, 0, 400);
 		for(var i = 0; i < 16; ++i) {
 			let x = i % 4;
 			let y = Math.floor(i / 4);
-			paintItem(ctx, seeds[index[0]][i], x * 100 * 1.02 + 400 * 1.02, y * 100 * 1.12, 100);
+			paintItem(ctx, seedsOfKind[index[0]][i], x * 100 * 1.02 + 400 * 1.02, y * 100 * 1.12, 100);
 		}
 		for(var y = 0; y < 8; y++) {
 			for(var x = 0; x < 16; x++) {
-				paintItem(ctx, seeds[y][x], x * 50 * 1.02, y * 50 * 1.12 + 400 * 1.12, 50);
+				paintItem(ctx, seedsOfKind[y][x], x * 50 * 1.02, y * 50 * 1.12 + 400 * 1.12, 50);
 			}
 		}
 
@@ -398,10 +427,6 @@ function bits(seed, from = 0, to = 32) {
 	return r;
 }
 
-function numeric(seed) {
-	return (seed[0] | seed[1] << 8 | seed[2] << 16 | seed[3] << 24) >>> 0
-}
-
 function mutateBits(count) {
 	return (seed) => {
 		for(var b = 0; b < count; ++b) {
@@ -409,6 +434,19 @@ function mutateBits(count) {
 			let item = Math.floor(Math.random() * 4);
 			seed[item] ^= bit;
 		}
+	}
+}
+
+function seedsForKind(kind){
+	switch(kind){
+		case 'Procedural':
+			return seeds;
+		case 'ProceduralPersonal':
+			return personalSeeds;
+		case 'ProceduralAccount':
+			return accountSeeds;
+		default:
+			throw new Error(`Unknown kind ${kind}`);
 	}
 }
 

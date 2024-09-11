@@ -278,4 +278,4 @@ function splitBox(b, depth, colors) {
     }
 }
 
-export const schema = { draw, name: "Split", artist: "pifragile.gh" };
+export const schema = { draw, name: "Split", artist: "pifragile.gh", kind: "Procedural" };
