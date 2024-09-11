@@ -2,13 +2,17 @@
   "name": "entropretty",
   "type": "module",
   "scripts": {
-    "build": "npm run bundle",
     "bundle": "for file in ./designs/*.js; do rollup -i $file -o out/$(basename $file) -f es -p 'terser={mangle: {reserved: [\"draw\"]}}';  done",
-    "start": "npx serve ."
+    "start": "npx serve .",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
-    "rollup": "^4.18.1"
+    "rollup": "^4.18.1",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1"
   },
   "dependencies": {
   }
