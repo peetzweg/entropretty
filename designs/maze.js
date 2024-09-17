@@ -295,4 +295,4 @@ function draw(ctx, seed) {
   end.blob(ctx, inc);
 }
 
-export const schema = { draw, name: "Wilson's Maze", artist: "gavofyork.dot" };
+export const schema = { draw, name: "Wilson's Maze", artist: "gavofyork.dot", kind: "Procedural"  };

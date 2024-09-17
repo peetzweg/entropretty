@@ -36,4 +36,4 @@ function draw(ctx, seed) {
   ctx.stroke();
 }
 
-export const schema = { draw, name: "Ugly Lines", artist: "gavofyork.dot" };
+export const schema = { draw, name: "Ugly Lines", artist: "gavofyork.dot", kind: "Procedural" };

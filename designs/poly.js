@@ -317,4 +317,4 @@ const Box = class {
     }
 };
 
-export const schema = { draw, name: "Poly", artist: "pifragile.gh" };
+export const schema = { draw, name: "Poly", artist: "pifragile.gh", kind: "Procedural" };

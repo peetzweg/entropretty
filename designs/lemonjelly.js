@@ -335,4 +335,4 @@ function draw(t, a) {
   })(t, l, e);
 }
 
-export const schema = { draw, name: "Lemon Jelly", artist: "gavofyork.dot" };
+export const schema = { draw, name: "Lemon Jelly", artist: "gavofyork.dot", kind: "Procedural" };

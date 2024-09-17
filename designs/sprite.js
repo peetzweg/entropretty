@@ -103,4 +103,4 @@ function drawComponent(a, b, t, j) {
 }
 */
 
-export const schema = { draw, name: "Sprite", artist: "gavofyork.dot" };
+export const schema = { draw, name: "Sprite", artist: "gavofyork.dot", kind: "Procedural" };

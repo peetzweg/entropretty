@@ -90,4 +90,4 @@ function draw(ctx, seed) {
   drawTime();
 }
 
-export const schema = { draw, name: "Mondaine", artist: "gavofyork.dot" };
+export const schema = { draw, name: "Mondaine", artist: "gavofyork.dot", kind: "Procedural"  };

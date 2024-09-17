@@ -57,3 +57,7 @@ There are several functions provided for operating on seeds:
 - `bits(seed)`: Get a number built from all bits of the seed, somewhere between 0 and 2**32 - 1 inclusive.
 - `split(seed, parts)`: Return an array of numbers, `parts` in length, each using approximately the same number of bits from the `seed`.
 - `randomGenerator(seed)`: Return a function which itself takes no arguments and returns a stream of random numbers between 0 and 1. This uses the Prando algorithm. There is also `cheapRandomGenerator` (using SFC32) and `secureRandomGenerator` (using SHA-256).
+
+
+### Types of Seeds
+

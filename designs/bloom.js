@@ -37,4 +37,4 @@ function draw(ctx, seed) {
   }
 }
 
-export const schema = { draw, name: "Bloom", artist: "gavofyork.dot" };
+export const schema = { draw, name: "Bloom", artist: "gavofyork.dot", kind:"Procedural"};
